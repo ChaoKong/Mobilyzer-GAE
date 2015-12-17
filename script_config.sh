@@ -23,7 +23,7 @@
 
 PYTHON=python2.5
 APPCFG=`which appcfg.py`
-APPSERVER=`which dev_appserver.py`
+APPSERVER=`which old_dev_appserver.py`
 
 
 APP_ID=`cat app.yaml.tmpl | grep application | cut -d " " -f 2`
@@ -56,4 +56,4 @@ CLEAN=""
 
 ADDRESS=""
 #TODO(user) If you need to bind to a local address uncomment and adjust this.
-#ADDRESS="--address=192.168.1.128"
+ADDRESS="--address=35.2.3.19"

@@ -34,13 +34,12 @@
   <span class="link">Hi, {{ user }}</span>
   <span class="link"><a href="{{logout_link}}">Logout</a></span>
   <span class="link"><a href="http://mobiperf.com/faq.html">Help</a></span>
-  <span class="link" id="buildinfo">Version 20140131-153500-ashkan-</span>
+  <span class="link" id="buildinfo">Version 20151215-221831-shahab-cc86bd4</span>
   </div>
   </div>
   </div>
 
   <div id="applicationContainer">
-  	{% if mobiperf %}
     <blockquote>
     <br><b>Mobiperf</b> is an Android app for collecting mobile
     network measurements in the wild.
@@ -49,7 +48,7 @@
     You can install the Mobiperf app on your Android device using
     Google Play.
    </blockquote>
-	{% endif %}
+
   <div id="main-content">
     {% if error %}
       <div class="error">

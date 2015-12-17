@@ -1,5 +1,5 @@
 application: openmobiledata
-version: mstuploadtasks
+version: 20151215-221831-shahab-cc86bd4
 runtime: python
 api_version: 1
 default_expiration: "600s"
@@ -10,14 +10,6 @@ builtins:
 handlers:
 - url: /static
   static_dir: static
-
-- url: /visualization
-  script: gspeedometer/main.py
-  login: optional
-  
-- url: /its
-  script: gspeedometer/main.py
-  login: required
 
 - url: /favicon.ico
   static_files: static/favicon.ico
