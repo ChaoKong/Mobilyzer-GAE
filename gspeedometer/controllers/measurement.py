@@ -46,9 +46,10 @@ MEASUREMENT_TYPES = [('ping', 'ping'),
                      ('tcpthroughput', 'TCP throughput'),
                      ('rrc', 'RRC inference'),
                      ('pageloadtime', 'Page load time'),
-                     ('video', 'Video QoE'),
-                     # Smart Mobilyzer
-                     ('smart_ping', 'automatic scheduled ping tests')]
+                     ('video', 'Video QoE')]
+
+# SmartMobilyzer Tasks
+MEASUREMENT_TYPES += [("smart_" + t[0], "Automatic Scheduled " + t[1]) for t in MEASUREMENT_TYPES]
 
 CDN_TARGETS = ['ec-media.soundcloud.com',  # EdgeCast
                'video-http.media-imdb.com',  # Amazon CloudFront
@@ -283,7 +284,7 @@ class MeasurementType:
         return MeasurementType.GetMeasurement(MEASUREMENT_TYPES[0][0])
 
     @staticmethod
-    def GetMeasurement(measurement_type):
+    def GetMeasurement(type):
         """Factory method for getting measurement objects for display in
         measurement scheduler.
 
@@ -296,90 +297,91 @@ class MeasurementType:
         Returns:
           A MeasurementType object with measurement-specific details.
         """
+        isSmart = type.startswith("smart_")
+        measurement_type = type[6:] if isSmart else type
+        extraFields = [('start_time', 'start time'),
+                       ('end_time', 'end time'),
+                       ('device_count', '# of UEs')] if isSmart else []
+        discPrep = "Automatic Scheduled " if isSmart else ""
         if measurement_type == 'ping':
             return MeasurementType(
-                'ping', 'ping', SortedDict([('target', 'Target (IP or hostname)'),
-                                            ('location_update_distance', 'Location update distance (m)'),
-                                            ('trigger_location_update', 'Trigger location update (bool)'),
-                                            ('ping_timeout_sec', 'Ping timeout (seconds)'),
-                                            ('profile_1_freq', 'Profile 1 frequency (float)'),
-                                            ('profile_2_freq', 'Profile 2 frequency (float)'),
-                                            ('profile_3_freq', 'Profile 3 frequency (float)'),
-                                            ('profile_4_freq', 'Profile 4 frequency (float)'),
-                                            ('profile_unlimited', 'Unlimited profile frequency (float)'),
-                                            ('packet_size_byte', 'Ping packet size (bytes)')]))
-        elif measurement_type == 'smart_ping':
-            return MeasurementType(
-                'smart_ping', 'smart ping', SortedDict([('target', 'Target (IP or hostname)'),
-                                                        ('location_update_distance', 'Location update distance (m)'),
-                                                        ('trigger_location_update', 'Trigger location update (bool)'),
-                                                        ('ping_timeout_sec', 'Ping timeout (seconds)'),
-                                                        ('profile_1_freq', 'Profile 1 frequency (float)'),
-                                                        ('profile_2_freq', 'Profile 2 frequency (float)'),
-                                                        ('profile_3_freq', 'Profile 3 frequency (float)'),
-                                                        ('profile_4_freq', 'Profile 4 frequency (float)'),
-                                                        ('profile_unlimited', 'Unlimited profile frequency (float)'),
-                                                        ('packet_size_byte', 'Ping packet size (bytes)'),
-                                                        ('start_time', 'start time'),
-                                                        ('end_time', 'end time'),
-                                                        ('device_count', '# of UEs')
-                                                        ]))
+                type, discPrep + 'ping', SortedDict(extraFields + [('target', 'Target (IP or hostname)'),
+                                                                   ('location_update_distance',
+                                                                    'Location update distance (m)'),
+                                                                   ('trigger_location_update',
+                                                                    'Trigger location update (bool)'),
+                                                                   ('ping_timeout_sec', 'Ping timeout (seconds)'),
+                                                                   ('profile_1_freq', 'Profile 1 frequency (float)'),
+                                                                   ('profile_2_freq', 'Profile 2 frequency (float)'),
+                                                                   ('profile_3_freq', 'Profile 3 frequency (float)'),
+                                                                   ('profile_4_freq', 'Profile 4 frequency (float)'),
+                                                                   ('profile_unlimited',
+                                                                    'Unlimited profile frequency (float)'),
+                                                                   ('packet_size_byte', 'Ping packet size (bytes)')]))
         elif measurement_type == 'dns_lookup':
             return MeasurementType(
-                'dns_lookup', 'DNS lookup',
-                SortedDict([('target', 'Target (IP or hostname)'),
-                            ('location_update_distance', 'Location update distance (m)'),
-                            ('trigger_location_update', 'Trigger location update (bool)'),
-                            ('profile_1_freq', 'Profile 1 frequency (float)'),
-                            ('profile_2_freq', 'Profile 2 frequency (float)'),
-                            ('profile_3_freq', 'Profile 3 frequency (float)'),
-                            ('profile_4_freq', 'Profile 4 frequency (float)'),
-                            ('profile_unlimited', 'Unlimited profile frequency (float)'),
-                            ('server', 'DNS server')]))
+                type, discPrep + 'DNS lookup',
+                SortedDict(extraFields + [('target', 'Target (IP or hostname)'),
+                                          ('location_update_distance', 'Location update distance (m)'),
+                                          ('trigger_location_update', 'Trigger location update (bool)'),
+                                          ('profile_1_freq', 'Profile 1 frequency (float)'),
+                                          ('profile_2_freq', 'Profile 2 frequency (float)'),
+                                          ('profile_3_freq', 'Profile 3 frequency (float)'),
+                                          ('profile_4_freq', 'Profile 4 frequency (float)'),
+                                          ('profile_unlimited', 'Unlimited profile frequency (float)'),
+                                          ('server', 'DNS server')]))
         elif measurement_type == 'traceroute':
             return MeasurementType(
-                'traceroute', 'traceroute',
-                SortedDict([('target', 'Target (IP or hostname)'),
-                            ('location_update_distance', 'Location update distance (m)'),
-                            ('trigger_location_update', 'Trigger location update (bool)'),
-                            ('max_hop_count', 'Traceroute max hop count'),
-                            ('profile_1_freq', 'Profile 1 frequency (float)'),
-                            ('profile_2_freq', 'Profile 2 frequency (float)'),
-                            ('profile_3_freq', 'Profile 3 frequency (float)'),
-                            ('profile_4_freq', 'Profile 4 frequency (float)'),
-                            ('profile_unlimited', 'Unlimited profile frequency (float)'),
-                            ('pings_per_hop', 'Traceroute pings per hop')]))
+                type, discPrep + 'traceroute',
+                SortedDict(extraFields + [('target', 'Target (IP or hostname)'),
+                                          ('location_update_distance', 'Location update distance (m)'),
+                                          ('trigger_location_update', 'Trigger location update (bool)'),
+                                          ('max_hop_count', 'Traceroute max hop count'),
+                                          ('profile_1_freq', 'Profile 1 frequency (float)'),
+                                          ('profile_2_freq', 'Profile 2 frequency (float)'),
+                                          ('profile_3_freq', 'Profile 3 frequency (float)'),
+                                          ('profile_4_freq', 'Profile 4 frequency (float)'),
+                                          ('profile_unlimited', 'Unlimited profile frequency (float)'),
+                                          ('pings_per_hop', 'Traceroute pings per hop')]))
         elif measurement_type == 'http':
             return MeasurementType(
-                'http', 'HTTP get', SortedDict([('url', 'HTTP URL'),
-                                                ('location_update_distance', 'Location update distance (m)'),
-                                                ('trigger_location_update', 'Trigger location update (bool)'),
-                                                ('profile_1_freq', 'Profile 1 frequency (float)'),
-                                                ('profile_2_freq', 'Profile 2 frequency (float)'),
-                                                ('profile_3_freq', 'Profile 3 frequency (float)'),
-                                                ('profile_4_freq', 'Profile 4 frequency (float)'),
-                                                ('profile_unlimited', 'Unlimited profile frequency (float)'),
-                                                ('headers', 'HTTP headers'), ('method', 'HTTP method')]))
+                type, discPrep + 'HTTP get', SortedDict(extraFields + [('url', 'HTTP URL'),
+                                                                       ('location_update_distance',
+                                                                        'Location update distance (m)'),
+                                                                       ('trigger_location_update',
+                                                                        'Trigger location update (bool)'),
+                                                                       (
+                                                                       'profile_1_freq', 'Profile 1 frequency (float)'),
+                                                                       (
+                                                                       'profile_2_freq', 'Profile 2 frequency (float)'),
+                                                                       (
+                                                                       'profile_3_freq', 'Profile 3 frequency (float)'),
+                                                                       (
+                                                                       'profile_4_freq', 'Profile 4 frequency (float)'),
+                                                                       ('profile_unlimited',
+                                                                        'Unlimited profile frequency (float)'),
+                                                                       ('headers', 'HTTP headers'),
+                                                                       ('method', 'HTTP method')]))
         elif measurement_type == 'tcpthroughput':
             return MeasurementType(
-                'tcpthroughput', 'TCP throughput',
-                SortedDict([('dir_up', 'True: Upload; False: Download'),
-                            ('target', 'Target (IP or hostname)'),
-                            ('data_limit_mb_up', 'Upstream data limit (MB)'),
-                            ('data_limit_mb_down', 'Downstream data limit (MB)'),
-                            ('duration_period_sec', 'Experiment duration (seconds)'),
-                            ('pkt_size_up_bytes', 'Uplink packet size (bytes)'),
-                            ('sample_period_sec', 'Interval to sample throughput (seconds)'),
-                            ('slow_start_period_sec', 'Waiting period for slow start (seconds)'),
-                            ('tcp_timeout_sec', 'TCP connection timeout (seconds)'),
-                            ('profile_1_freq', 'Profile 1 frequency (float)'),
-                            ('profile_2_freq', 'Profile 2 frequency (float)'),
-                            ('profile_3_freq', 'Profile 3 frequency (float)'),
-                            ('profile_4_freq', 'Profile 4 frequency (float)'),
-                            ('profile_unlimited', 'Unlimited profile frequency (float)')]))
+                type, discPrep + 'TCP throughput',
+                SortedDict(extraFields + [('dir_up', 'True: Upload; False: Download'),
+                                          ('target', 'Target (IP or hostname)'),
+                                          ('data_limit_mb_up', 'Upstream data limit (MB)'),
+                                          ('data_limit_mb_down', 'Downstream data limit (MB)'),
+                                          ('duration_period_sec', 'Experiment duration (seconds)'),
+                                          ('pkt_size_up_bytes', 'Uplink packet size (bytes)'),
+                                          ('sample_period_sec', 'Interval to sample throughput (seconds)'),
+                                          ('slow_start_period_sec', 'Waiting period for slow start (seconds)'),
+                                          ('tcp_timeout_sec', 'TCP connection timeout (seconds)'),
+                                          ('profile_1_freq', 'Profile 1 frequency (float)'),
+                                          ('profile_2_freq', 'Profile 2 frequency (float)'),
+                                          ('profile_3_freq', 'Profile 3 frequency (float)'),
+                                          ('profile_4_freq', 'Profile 4 frequency (float)'),
+                                          ('profile_unlimited', 'Unlimited profile frequency (float)')]))
         elif measurement_type == 'rrc':
             return MeasurementType(
-                'rrc', 'RRC inference', SortedDict([
+                type, discPrep + 'RRC inference', SortedDict(extraFields + [
                     ('echo_host', "Local server hostname for RTT measurement"),
                     ('port', 'Local server port'),
                     ('giveup_threshhold', "Maximum retries"),
@@ -404,28 +406,28 @@ class MeasurementType:
           (true/false)')]))
         elif measurement_type == 'pageloadtime':
             return MeasurementType(
-                'pageloadtime', 'Page Load Time',
-                SortedDict([('url', 'Page URL:'),
-                            ('spdy', 'SPDY Test (True/False):'),
-                            ('location_update_distance', 'Location update distance (m)'),
-                            ('trigger_location_update', 'Trigger location update (bool)'),
-                            ('profile_1_freq', 'Profile 1 frequency (float)'),
-                            ('profile_2_freq', 'Profile 2 frequency (float)'),
-                            ('profile_3_freq', 'Profile 3 frequency (float)'),
-                            ('profile_4_freq', 'Profile 4 frequency (float)'),
-                            ('profile_unlimited', 'Unlimited profile frequency (float)')]))
+                type, discPrep + 'Page Load Time',
+                SortedDict(extraFields + [('url', 'Page URL:'),
+                                          ('spdy', 'SPDY Test (True/False):'),
+                                          ('location_update_distance', 'Location update distance (m)'),
+                                          ('trigger_location_update', 'Trigger location update (bool)'),
+                                          ('profile_1_freq', 'Profile 1 frequency (float)'),
+                                          ('profile_2_freq', 'Profile 2 frequency (float)'),
+                                          ('profile_3_freq', 'Profile 3 frequency (float)'),
+                                          ('profile_4_freq', 'Profile 4 frequency (float)'),
+                                          ('profile_unlimited', 'Unlimited profile frequency (float)')]))
         elif measurement_type == 'video':
             return MeasurementType(
-                'video', 'Video QoE',
-                SortedDict([('content_url', 'Content URL:'),
-                            ('content_id', 'Content ID:'),
-                            ('content_type', 'Algorithm (0: DASH, 1: BBA, 2: PROGRESSIVE):'),
-                            ('location_update_distance', 'Location update distance (m)'),
-                            ('trigger_location_update', 'Trigger location update (bool)'),
-                            ('profile_1_freq', 'Profile 1 frequency (float)'),
-                            ('profile_2_freq', 'Profile 2 frequency (float)'),
-                            ('profile_3_freq', 'Profile 3 frequency (float)'),
-                            ('profile_4_freq', 'Profile 4 frequency (float)'),
-                            ('profile_unlimited', 'Unlimited profile frequency (float)')]))
+                type, discPrep + 'Video QoE',
+                SortedDict(extraFields + [('content_url', 'Content URL:'),
+                                          ('content_id', 'Content ID:'),
+                                          ('content_type', 'Algorithm (0: DASH, 1: BBA, 2: PROGRESSIVE):'),
+                                          ('location_update_distance', 'Location update distance (m)'),
+                                          ('trigger_location_update', 'Trigger location update (bool)'),
+                                          ('profile_1_freq', 'Profile 1 frequency (float)'),
+                                          ('profile_2_freq', 'Profile 2 frequency (float)'),
+                                          ('profile_3_freq', 'Profile 3 frequency (float)'),
+                                          ('profile_4_freq', 'Profile 4 frequency (float)'),
+                                          ('profile_unlimited', 'Unlimited profile frequency (float)')]))
         else:
             raise RuntimeError('Invalid measurement type: %s' % measurement_type)

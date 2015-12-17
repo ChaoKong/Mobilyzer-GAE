@@ -161,6 +161,9 @@ class DeviceProperties(db.Model):
     mem_race = db.FloatProperty()
     network_race = db.FloatProperty()
 
+    assinged = db.BooleanProperty(default=False)
+    done = db.BooleanProperty(default=False)
+
     # GCM registration id
     registration_id = db.StringProperty();
 
