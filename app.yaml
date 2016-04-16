@@ -1,5 +1,5 @@
-application: openmobiledata
-version: 20151215-221831-shahab-cc86bd4
+application: eecs582
+version: alpha-001
 runtime: python
 api_version: 1
 default_expiration: "600s"
