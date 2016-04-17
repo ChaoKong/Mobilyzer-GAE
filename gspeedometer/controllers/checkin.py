@@ -75,6 +75,11 @@ class Checkin(webapp.RequestHandler):
         device_properties.cpu_race = float(device_info_dict['cpu_race'])
         device_properties.mem_race = float(device_info_dict['mem_race'])
         device_properties.network_race = float(device_info_dict['network_race'])
+        device_properties.data_limit = int(device_info_dict['data_limit'])
+        device_properties.battery_limit = int(device_info_dict['battery_limit'])
+        device_properties.data_used_startTime = long(device_info_dict['data_used_startTime'])
+        device_properties.data_used = long(device_info_dict['data_used'])
+        
         device_properties.put()
         logging.debug("Request App: " + device_properties.request_app)
 

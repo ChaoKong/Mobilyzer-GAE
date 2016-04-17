@@ -161,6 +161,12 @@ class DeviceProperties(db.Model):
     mem_race = db.FloatProperty()
     network_race = db.FloatProperty()
 
+    # hilarious0401@gmail.com
+    data_limit = db.IntegerProperty()
+    battery_limit = db.IntegerProperty()
+    data_used_startTime = db.LongProperty()
+    data_used = db.LongProperty()
+
     assinged = db.BooleanProperty(default=False)
     done = db.BooleanProperty(default=False)
 
