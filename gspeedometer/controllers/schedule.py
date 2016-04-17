@@ -215,7 +215,7 @@ class Schedule(webapp.RequestHandler):
 
   def UploadTasks(self, **unused_args):
     user = users.get_current_user()
-    logging.error("user: "+str(user))
+    logging.error("username: "+str(user))
     if not str(user) in ['hilarious0401', 'kongchao95']:
         self.error(404)
         self.response.headers['Content-Type'] = 'text/plain'
