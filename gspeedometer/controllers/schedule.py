@@ -216,7 +216,7 @@ class Schedule(webapp.RequestHandler):
   def UploadTasks(self, **unused_args):
     user = users.get_current_user()
     logging.error("user: "+str(user))
-    if not str(user) in ['ashnik@umich.edu','ashkannikravesh', 'shahifaqeer', 'zmao@umich.edu', 'morley', 'xsc@umich.edu', 'feamster', 'drchoffnes', 'glex.qsd']:
+    if not str(user) in ['hilarious0401', 'kongchao95']:
         self.error(404)
         self.response.headers['Content-Type'] = 'text/plain'
         self.response.out.write("Not Authenticated!")
