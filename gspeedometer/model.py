@@ -86,31 +86,6 @@ class DeviceInfo(db.Model):
         else:
             raise RuntimeError('User cannot access device %s', device_id)
 
-    def raceStatus(self):
-        props = self.latestDeviceProperties()
-        if not props:
-            return 2
-        return props.cpu_race
-
-    def availableResources(self):
-        return 1 - self.raceStatus()
-
-    def isAvailable(self):
-        ps = self.latestDeviceProperties()
-        return ps and not ps.isOld()
-
-    def latestDeviceProperties(self):
-        query = self.deviceproperties_set
-        query.order('-timestamp')
-        device_properties_list = query.fetch(1)
-        if not device_properties_list:
-            return None
-        else:
-            ps = device_properties_list[0]
-            if ps.isOld():
-                return None
-            return ps
-
 
 class DeviceProperties(db.Model):
     """Represents the dynamic properties of a given device."""
