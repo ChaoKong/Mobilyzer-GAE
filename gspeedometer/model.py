@@ -257,7 +257,18 @@ class Task(db.Expando):
         except db.BadQueryError:
             logging.warn('Bad filter expression %s', self.filter)
         return devices
-
+        
+    def latestDeviceProperties(self):
+         query = self.deviceproperties_set
+         query.order('-timestamp')
+         device_properties_list = query.fetch(1)
+         if not device_properties_list:
+             return None
+         else:
+             ps = device_properties_list[0]
+             if ps.isOld():
+                 return None
+             return ps
 
 class Measurement(db.Expando):
     """Represents a single measurement by a single end-user device."""

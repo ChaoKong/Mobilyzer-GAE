@@ -19,15 +19,14 @@
 __author__ = 'drchoffnes@gmail.com (David Choffnes)'
 
 # Set of users with admin privileges
-ADMIN_USERS = ['drchoffnes@gmail.com', 'haneul0318@gmail.com', 'sanae@umich.edu', 'ashnik@umich.edu', 'zmao@umich.edu', 'morley@gmail.com', 'Sanae.Rosen@gmail.com', "markjin1990@gmail.com", "test@example.com", "tajik@umich.edu"]
+ADMIN_USERS = ['drchoffnes@gmail.com', 'haneul0318@gmail.com', 'sanae@umich.edu', 'ashnik@umich.edu', 'zmao@umich.edu', 'morley@gmail.com', 'Sanae.Rosen@gmail.com']
 ADMIN_ANONYMOUS_USERS = ADMIN_USERS
-ADMIN_ANONYMOUS_USERS.append('huangshu91@gmail.com')
 ADMIN_USERS.append('hilarious0401@gmail.com')
 ADMIN_USERS.append('yklin@umich.edu')
 ADMIN_USERS.append('kongchao95@gmail.com')
 
 # Set of users with rights to administer tasks
-SCHEDULE_ADMIN_USERS = ['drchoffnes@gmail.com', 'haneul0318@gmail.com', 'sanae@umich.edu' , 'ashnik@umich.edu', 'zmao@umich.edu' , 'morley@gmail.com', 'Sanae.Rosen@gmail.com', "markjin1990@gmail.com", "test@example.com", "tajik@umich.edu"]
+SCHEDULE_ADMIN_USERS = ['drchoffnes@gmail.com', 'haneul0318@gmail.com', 'sanae@umich.edu' , 'ashnik@umich.edu', 'zmao@umich.edu' , 'morley@gmail.com', 'Sanae.Rosen@gmail.com']
 SCHEDULE_ADMIN_USERS.append('hilarious0401@gmail.com')
 SCHEDULE_ADMIN_USERS.append('yklin@umich.edu')
 SCHEDULE_ADMIN_USERS.append('kongchao95@gmail.com')

@@ -133,7 +133,7 @@ class Measurement(webapp.RequestHandler):
                 util.ConvertFromDict(measurement, measurement_dict)
                 # measurement.device_properties = device_properties
                 measurement.put()
-                smartScheduler.mesearmentDone(self)
+                # smartScheduler.mesearmentDone(self)
 
                 # app_version_num = 0
                 # if str(measurement.device_properties.app_version)[0].isdigit():

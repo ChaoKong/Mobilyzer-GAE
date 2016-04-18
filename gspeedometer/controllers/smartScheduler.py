@@ -4,6 +4,8 @@ from datetime import datetime
 
 import math
 
+import logging
+
 __author__ = ('hilarious0401@gmail.com (Yikai Lin), chaokong95@gmail.com (Chao Kong)')
 
 from gspeedometer import model
@@ -67,27 +69,29 @@ def currentStage():
 def filtr(devices):
     tasktype = config.task.type
     appetite = ResourceMapping.map(tasktype)
-    DR = dict()
+    DR = []
     for device in devices:
         properties = device.last_update()
         rem_data = properties.data_limit-properties.data_used
         rem_battery = properties.battery_level-properties.battery_limit
+        logging.debug(",".join([str(device.id), str(properties.data_limit),
+         str(properties.data_used), str(properties.battery_level), str(properties.battery_limit)]))
 
         data_D = 0.0
         battery_D = 0.0
-        if value['data']>rem_data:
+        if appetite['data']>rem_data:
             devices.remove(device)
             continue
         else:
-            data_D = float(value['data'])/rem_data
+            data_D = float(appetite['data'])/rem_data
 
-        if value['battery']>rem_battery:
+        if appetite['battery']>rem_battery:
             devices.remove(device)
             continue
         else:
-            battery_D = float(value['battery']/rem_battery)
+            battery_D = float(appetite['battery']/rem_battery)
 
-        DR[device] = data_D if data_D>battery_D else battery_D
+        DR.append((device, data_D if data_D>battery_D else battery_D))
 
     return DR
 
@@ -98,17 +102,19 @@ def dominant():
 
     task = config.task
 
-    devices = task.getSupportedDevices()
+    devices = list(task.getSupportedDevices())
     DR = filtr(devices)
-    sorted_DR = sorted(DR, key=DR.__getitem__)
+    sorted_DR = sorted(DR, key=lambda d:d[1])
+    for i in range(len(sorted_DR)):
+        logging.debug(str(sorted_DR[i][0].id)+", "+str(sorted_DR[i][1]))
 
     if len(devices)>0:
         if len(devices)>=config.deviceCount:
             for i in range(config.deviceCount):
-                storeTask(sorted_DR[i])
+                storeTask(sorted_DR[i][0])
         else:
             for i in range(len(devices)):
-                storeTask(sorted_DR[i])
+                storeTask(sorted_DR[i][0])
 
 # def tik():
 #     if not config:

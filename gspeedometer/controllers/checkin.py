@@ -86,7 +86,8 @@ class Checkin(webapp.RequestHandler):
         device_schedule = GetDeviceSchedule(device_properties)
 
         device_schedule_json = EncodeScheduleAsJson(device_schedule)
-        logging.debug('Sending checkin response: %s', device_schedule_json)
+        if device_schedule_json:
+            logging.debug('Sending checkin response: %s', device_schedule_json)
         self.response.headers['Content-Type'] = 'application/json'
         self.response.out.write(device_schedule_json)
 
@@ -109,6 +110,7 @@ def GetDeviceSchedule(device_properties):
 
 
     schedule = model.Task.all().filter(" device = ", device_properties.device_info)
+    logging.debug("schedule: %s", schedule)
     for task in schedule:
         if task.GetContext('appname') != None and device_properties.country_code != None:
             if task.GetContext('appname') == device_properties.request_app:
