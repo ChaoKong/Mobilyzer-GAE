@@ -8,6 +8,7 @@ __author__ = ('hilarious0401@gmail.com (Yikai Lin), chaokong95@gmail.com (Chao K
 
 from gspeedometer import model
 from google.appengine.api import users
+from gspeedometer import ResourceMapping
 
 taskDuration = 3 * 60
 
@@ -67,16 +68,27 @@ def filtr(devices):
     tasktype = config.task.type
     appetite = ResourceMapping.map(tasktype)
     DR = dict()
-    for key, value in appetite.iteritems():
-        for device in devices:
-            if value>getattr(device, key):
-                devices.remove(device)
-                continue
-            if device in DR:
-                if float(value)/getattr(device, key)>DR[device]:
-                    DR[device] = float(value)/getattr(device,key)
-            else:
-                DR[device]=float(value)/getattr(device, key)
+    for device in devices:
+        properties = device.last_update()
+        rem_data = properties.data_limit-properties.data_used
+        rem_battery = properties.battery_level-properties.battery_limit
+
+        data_D = 0.0
+        battery_D = 0.0
+        if value['data']>rem_data:
+            devices.remove(device)
+            continue
+        else:
+            data_D = float(value['data'])/rem_data
+
+        if value['battery']>rem_battery:
+            devices.remove(device)
+            continue
+        else:
+            battery_D = float(value['battery']/rem_battery)
+
+        DR[device] = data_D if data_D>battery_D else battery_D
+
     return DR
 
 
