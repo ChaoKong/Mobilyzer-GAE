@@ -102,7 +102,7 @@ def GetDeviceSchedule(device_properties):
     matched = set()
     #   its_devices=['UMnCBXxGBAhbbu.q4sqq7w', '6PjKR4Xo1.MyRAE28t.8YQ' , 'kmjRoKLPkokshmjn8OlUwA']
 
-    smartScheduler.tik()
+    # smartScheduler.tik()
 
     if not device_properties.device_info:
         return matched

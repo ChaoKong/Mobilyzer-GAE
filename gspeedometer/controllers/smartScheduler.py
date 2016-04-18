@@ -4,7 +4,7 @@ from datetime import datetime
 
 import math
 
-__author__ = ('markjin@umich.edu (Zhongjun Jin), tajik@umich.edu (Shahab Tajik)')
+__author__ = ('hilarious0401@gmail.com (Yikai Lin), chaokong95@gmail.com (Chao Kong)')
 
 from gspeedometer import model
 from google.appengine.api import users
@@ -45,6 +45,7 @@ def totalSeconds():
 def schedule(task, start, end, count):
     global config
     config = SmartTask(task, start, end, count)
+    dominant()
 
 
 def totalStages():
@@ -62,23 +63,59 @@ def futureStages():
 def currentStage():
     return passedStages() + 1
 
+def filtr(devices):
+    tasktype = config.task.type
+    appetite = ResourceMapping.map(tasktype)
+    DR = dict()
+    for key, value in appetite.iteritems():
+        for device in devices:
+            if value>getattr(device, key):
+                devices.remove(device)
+                continue
+            if device in DR:
+                if float(value)/getattr(device, key)>DR[device]:
+                    DR[device] = float(value)/getattr(device,key)
+            else:
+                DR[device]=float(value)/getattr(device, key)
+    return DR
 
-def tik():
+
+def dominant():
     if not config:
         return
 
-    while config.stage < currentStage():
-        for t in model.Task.all():
-            t.delete()
+    task = config.task
 
-        k = math.ceil((config.deviceCount - config.doneCount) / futureStages())
+    devices = task.getSupportedDevices()
+    DR = filtr(devices)
+    sorted_DR = sorted(DR, key=DR.__getitem__)
 
-        task = config.task
-        devices = sorted(task.getSupportedDevices(), key=lambda d: d.raceStatus())
-        for i in range(0, min(devices.__len__(), k)):
-            storeTask(devices[i])
+    if len(devices)>0:
+        if len(devices)>=config.deviceCount:
+            for i in range(config.deviceCount):
+                storeTask(sorted_DR[i])
+        else:
+            for i in range(len(devices)):
+                storeTask(sorted_DR[i])
 
-        config.stage += 1
+# def tik():
+#     if not config:
+#         return
+
+#     while config.stage < currentStage():
+#         # clear out the existing assignment, recompute the assignment
+#         for t in model.Task.all():
+#             t.delete()
+
+#         # calculating the # of devices to assign at each stage
+#         k = math.ceil((config.deviceCount - config.doneCount) / futureStages())
+
+#         task = config.task
+#         devices = sorted(task.getSupportedDevices(), key=lambda d: d.raceStatus())
+#         for i in range(0, min(devices.__len__(), k)):
+#             storeTask(devices[i])
+
+#         config.stage += 1
 
 
 def storeTask(device):
@@ -100,5 +137,5 @@ def storeTask(device):
     t.put()
 
 
-def mesearmentDone(self):
-    config.doneCount += 1
+# def mesearmentDone(self):
+    # config.doneCount += 1
