@@ -139,8 +139,8 @@ class DeviceProperties(db.Model):
     # hilarious0401@gmail.com
     data_limit = db.IntegerProperty()
     battery_limit = db.IntegerProperty()
-    data_used_startTime = db.LongProperty()
-    data_used = db.LongProperty()
+    data_used_startTime = db.IntegerProperty()
+    data_used = db.IntegerProperty()
 
     assinged = db.BooleanProperty(default=False)
     done = db.BooleanProperty(default=False)
