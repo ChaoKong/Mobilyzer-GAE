@@ -116,26 +116,6 @@ def dominant():
             for i in range(len(devices)):
                 storeTask(sorted_DR[i][0])
 
-# def tik():
-#     if not config:
-#         return
-
-#     while config.stage < currentStage():
-#         # clear out the existing assignment, recompute the assignment
-#         for t in model.Task.all():
-#             t.delete()
-
-#         # calculating the # of devices to assign at each stage
-#         k = math.ceil((config.deviceCount - config.doneCount) / futureStages())
-
-#         task = config.task
-#         devices = sorted(task.getSupportedDevices(), key=lambda d: d.raceStatus())
-#         for i in range(0, min(devices.__len__(), k)):
-#             storeTask(devices[i])
-
-#         config.stage += 1
-
-
 def storeTask(device):
     task = config.task
     t = model.Task()
@@ -153,7 +133,3 @@ def storeTask(device):
     for name, value in task.Params().items():
         setattr(t, 'mparam_' + name, value)
     t.put()
-
-
-# def mesearmentDone(self):
-    # config.doneCount += 1

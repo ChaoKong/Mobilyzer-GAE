@@ -1,3 +1,4 @@
+__author__ = ('hilarious0401@gmail.com (Yikai Lin), chaokong95@gmail.com (Chao Kong)')
 
 appetiteMap = {
 	'ping':{'battery':0.002, 'data':800},
